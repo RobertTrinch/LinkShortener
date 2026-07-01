@@ -6,20 +6,14 @@ using System.Text;
 
 namespace LinkShortener.Domain.Database.Models
 {
-    public class User
+    public class RegisterCode
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int UserId { get; set; }
-
+        [Required, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid RegisterCodeId { get; set; }
         [Required]
-        public string DisplayName { get; set; }
-
+        public int Code { get; set; }
         [Required]
         public string Email { get; set; }
-
-        [Required]
-        public string PasswordHash { get; set; }
-
 
     }
 }

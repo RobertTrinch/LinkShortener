@@ -407,3 +407,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 /LinkShortener.Api/LinkShortener-data.sqlite
+/LinkShortener.Api/LinkShortener-data.sqlite-shm
+/LinkShortener.Api/LinkShortener-data.sqlite-wal

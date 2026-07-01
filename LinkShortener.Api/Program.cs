@@ -1,14 +1,11 @@
 using LinkShortener.Api.Middleware;
 using LinkShortener.Domain.Database;
+using LinkShortener.Domain.Helpers;
+using LinkShortener.Domain.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
-
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Async(x => x.File("logs/log.log", retainedFileCountLimit: 30, rollingInterval: RollingInterval.Day))
-    .WriteTo.Console()
-    .CreateLogger();
-
-Log.Information("Log setup");
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +19,24 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddScoped<AuthService>();
+
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = Environment.GetEnvironmentVariable("linkshortener_jwtissuer"),
+            ValidAudience = Environment.GetEnvironmentVariable("linkshortener_jwtaudience"),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("linkshortener_jwtkey")!))
+        };
+    });
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();
@@ -33,4 +48,5 @@ app.UseMiddleware<ShortLinkRoutingMiddleware>();
 
 app.MapControllers();
 
+LogHelper.LogInformation("App Started");
 app.Run();

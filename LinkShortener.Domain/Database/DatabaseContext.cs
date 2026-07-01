@@ -15,6 +15,8 @@ namespace LinkShortener.Domain.Database
         public DbSet<ShortLink> ShortLinks { get; set; }
         public DbSet<Folder> Folders { get; set; }
         public DbSet<ClickAnalytic> ClickAnalytics { get; set; }
+        public DbSet<RegisterCode> RegisterCodes { get; set; }
+        public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
 
     }
 }
