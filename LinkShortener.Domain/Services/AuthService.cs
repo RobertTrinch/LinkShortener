@@ -2,6 +2,7 @@
 using LinkShortener.Domain.Database.Models;
 using LinkShortener.Domain.DTOs.Auth.Requests;
 using LinkShortener.Domain.DTOs.Auth.Responses;
+using LinkShortener.Domain.DTOs.User;
 using LinkShortener.Domain.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -136,6 +137,20 @@ namespace LinkShortener.Domain.Services
             };
         }
 
+        public async Task<UserProfileDto> GetUserProfile(string email)
+        {
+            var user = await context.Users.FirstOrDefaultAsync(x => x.Email == x.Email.ToLower().Trim());
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"User {email} does not exist");
+            }
+
+            return new UserProfileDto
+            {
+                Email = email,
+                DisplayName = user.DisplayName
+            };
+        }
 
         private static string GenerateJwtToken(User user)
         {

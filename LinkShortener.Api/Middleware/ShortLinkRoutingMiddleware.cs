@@ -1,4 +1,5 @@
 ﻿using LinkShortener.Domain.Database;
+using LinkShortener.Domain.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace LinkShortener.Api.Middleware
@@ -15,8 +16,7 @@ namespace LinkShortener.Api.Middleware
         public async Task InvokeAsync(HttpContext context, DatabaseContext dbContext)
         {
             var path = context.Request.Path.Value?.Trim('/');
-
-            if (string.IsNullOrWhiteSpace(path) || path.StartsWith("api/"))
+            if (string.IsNullOrWhiteSpace(path) || path.StartsWith("api/") || path.StartsWith("swagger/"))
             {
                 await _next(context);
                 return;
