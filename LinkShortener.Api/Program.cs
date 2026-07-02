@@ -42,6 +42,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = Environment.GetEnvironmentVariable("linkshortener_jwtaudience"),
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("linkshortener_jwtkey")!))
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                if (string.IsNullOrEmpty(context.Token))
+                {
+                    if (context.Request.Cookies.TryGetValue("accessToken", out var tokenFromCookie))
+                    {
+                        context.Token = tokenFromCookie;
+                    }
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
 
 var app = builder.Build();

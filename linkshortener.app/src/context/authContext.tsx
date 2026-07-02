@@ -11,7 +11,7 @@ type User = {
 type AuthContextType = {
   isAuthenticated: boolean
   user: User | null
-  login: (username: string, password: string) => Promise<boolean>
+  login: (email: string, password: string) => Promise<boolean>
   logout: () => Promise<void>
 }
 
@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await doGet<User>('/auth/getuserprofile') //TODO:: add the type for the response
+        const res = await doGet<User>('/api/auth/getuserprofile') //TODO:: add the type for the response
         if (res.status === 200) {
           setUser(res.data ?? null)
         }
@@ -38,11 +38,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     fetchUser()
   }, [])
 
-  const login = async (username: string, password: string) => {
-    const res = await doPost('auth/LoginUser', { body: { username, password } })
+  const login = async (email: string, password: string) => {
+    const res = await doPost('/api/auth/LoginUser', { body: { email, password } })
     if (res.status === 200) {
       // after login, fetch the user data
-      const userRes = await doGet<User>('auth/Me')
+      const userRes = await doGet<User>('/api/auth/getuserprofile')
       if (userRes.status === 200) {
         setUser(userRes.data ?? null)
         return true
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   const logout = async () => {
-    await doDelete('auth/LogoutUser', {})
+    await doDelete('/api/auth/LogoutUser', {})
     setUser(null)
   }
 

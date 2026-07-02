@@ -50,6 +50,7 @@ namespace LinkShortener.Api.Controllers
             }
         }
 
+        
         [HttpGet]
         public async Task<ActionResult<UserProfileDto>> GetUserProfile()
 
@@ -57,7 +58,7 @@ namespace LinkShortener.Api.Controllers
             var user = User.FindFirstValue(ClaimTypes.Name);
             if (string.IsNullOrEmpty(user))
             {
-                return Unauthorized("User not authentication");
+                return Unauthorized("User not authenticated");
             }
             return await authService.GetUserProfile(user);
         }
@@ -79,7 +80,7 @@ namespace LinkShortener.Api.Controllers
                 var newAccessToken = await authService.RefreshToken(refreshToken);
                 Response.Cookies.Append("accessToken", newAccessToken, new CookieOptions
                 {
-                    HttpOnly = false,
+                    HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.None,
                     Expires = DateTimeOffset.UtcNow.AddHours(1)

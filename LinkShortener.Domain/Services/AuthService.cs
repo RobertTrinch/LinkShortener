@@ -87,7 +87,12 @@ namespace LinkShortener.Domain.Services
                     DisplayName = dto.DisplayName,
                     PasswordHash = _passwordHasher.HashPassword(new User(), dto.Password)
                 });
-                registerCode.IsActive = false; //todo: cant unactivate the code for some reason
+
+                // Update the register code directly in the database to avoid optimistic concurrency issues
+                await context.RegisterCodes
+                    .Where(x => x.RegisterCodeId == registerCode.RegisterCodeId)
+                    .ExecuteUpdateAsync(s => s.SetProperty(x => x.IsActive, false));
+
                 await context.SaveChangesAsync();
                 LogHelper.LogInformation($"[AuthService.RegisterUser] Registered {dto.Email} ({dto.DisplayName}) using code {registerCode.Code}");
                 return new RegisterUserResponse

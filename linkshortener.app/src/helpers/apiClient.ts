@@ -86,9 +86,6 @@ async function doRequest<T>(
             document.cookie = 'accessToken=; Max-Age=0; path=/'
             document.cookie = 'refreshToken=; Max-Age=0; path=/'
             // Use setTimeout to avoid blocking the request
-            setTimeout(() => {
-              window.location.href = '/login'
-            }, 100)
           }
           return {
             data: undefined,
@@ -306,9 +303,6 @@ export async function doPostFormData<T>(
           if (isBrowser) {
             document.cookie = 'accessToken=; Max-Age=0; path=/'
             document.cookie = 'refreshToken=; Max-Age=0; path=/'
-            setTimeout(() => {
-              window.location.href = '/login'
-            }, 100)
           }
           return {
             data: undefined,

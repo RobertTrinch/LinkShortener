@@ -1,5 +1,7 @@
 'use client';
 
+import { useAuth } from "@/context/authContext";
+import { doPost } from "@/helpers/apiClient";
 import { ActionIcon, Button, Center, Container, Group, PasswordInput, TextInput, Title } from "@mantine/core";
 import { AtIcon, LockIcon } from '@phosphor-icons/react';
 import { useRouter } from "next/navigation";
@@ -7,8 +9,30 @@ import { useState } from "react";
 
 export default function Home() {
     const router = useRouter();
+    const auth = useAuth();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    if(auth.isAuthenticated) {
+        router.push('/dashboard');
+        return null;
+    }
+
+    const handleLogin = async () => {
+        try {
+            const success = await auth.login(email, password);
+            if (success) {
+                router.push('/dashboard');
+            } else {
+                // Handle login failure (e.g., show an error message)
+                console.error('Login failed');
+            }
+        }
+        catch (error) {
+            console.error('An error occurred during login:', error);
+        }
+    };
 
     return (
         <div>
@@ -28,7 +52,7 @@ export default function Home() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <Button>Login</Button>
+                    <Button onClick={handleLogin}>Login</Button>
                 </Container>
             </main>
         </div>
