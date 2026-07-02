@@ -4,21 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinkShortener.Api.Middleware
 {
-    public class ShortLinkRoutingMiddleware
+    public class ShortLinkRoutingMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
-
-        public ShortLinkRoutingMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
-
         public async Task InvokeAsync(HttpContext context, DatabaseContext dbContext)
         {
             var path = context.Request.Path.Value?.Trim('/');
             if (string.IsNullOrWhiteSpace(path) || path.StartsWith("api/") || path.StartsWith("swagger/"))
             {
-                await _next(context);
+                await next(context);
                 return;
             }
 
@@ -48,7 +41,7 @@ namespace LinkShortener.Api.Middleware
                 }
             }
 
-            await _next(context);
+            await next(context);
         }
 
         private static void TriggerRedirect(HttpContext context, string destinationUrl)

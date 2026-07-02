@@ -11,9 +11,11 @@ namespace LinkShortener.Domain.Database.Models
         [Required, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid RegisterCodeId { get; set; }
         [Required]
-        public int Code { get; set; }
+        public string Code { get; set; }
         [Required]
         public string Email { get; set; }
+        [Required]
+        public bool IsActive { get; set; }
 
     }
 }

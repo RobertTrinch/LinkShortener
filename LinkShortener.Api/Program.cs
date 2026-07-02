@@ -9,6 +9,13 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => builder.WithOrigins("http://localhost:3000", "https://godashboard.trinch.net")
+        .AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+});
+
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
@@ -20,6 +27,7 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 });
 
 builder.Services.AddScoped<AuthService>();
+
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -45,6 +53,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 

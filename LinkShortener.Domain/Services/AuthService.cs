@@ -26,8 +26,7 @@ namespace LinkShortener.Domain.Services
         {
             try
             {
-                var registerCode = await context.RegisterCodes.FirstOrDefaultAsync(x => x.Code == dto.RegisterCode);
-
+                var registerCode = await context.RegisterCodes.FirstOrDefaultAsync(x => x.Code == dto.RegisterCode && x.IsActive == true);
                 if (registerCode == null)
                 {
                     return new RegisterUserResponse
@@ -88,8 +87,7 @@ namespace LinkShortener.Domain.Services
                     DisplayName = dto.DisplayName,
                     PasswordHash = _passwordHasher.HashPassword(new User(), dto.Password)
                 });
-
-                context.RegisterCodes.Remove(registerCode);
+                registerCode.IsActive = false; //todo: cant unactivate the code for some reason
                 await context.SaveChangesAsync();
                 LogHelper.LogInformation($"[AuthService.RegisterUser] Registered {dto.Email} ({dto.DisplayName}) using code {registerCode.Code}");
                 return new RegisterUserResponse

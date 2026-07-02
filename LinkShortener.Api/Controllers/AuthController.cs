@@ -52,13 +52,48 @@ namespace LinkShortener.Api.Controllers
 
         [HttpGet]
         public async Task<ActionResult<UserProfileDto>> GetUserProfile()
+
         {
             var user = User.FindFirstValue(ClaimTypes.Name);
-            if(string.IsNullOrEmpty(user))
+            if (string.IsNullOrEmpty(user))
             {
                 return Unauthorized("User not authentication");
             }
             return await authService.GetUserProfile(user);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                Response.Cookies.Delete("accessToken");
+                Response.Cookies.Delete("refreshToken");
+                return Unauthorized("No refresh token provided");
+            }
+
+            try
+            {
+                var newAccessToken = await authService.RefreshToken(refreshToken);
+                Response.Cookies.Append("accessToken", newAccessToken, new CookieOptions
+                {
+                    HttpOnly = false,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTimeOffset.UtcNow.AddHours(1)
+                });
+                return Ok();
+            }
+            catch (Exception ex) when (ex is UnauthorizedAccessException || ex is KeyNotFoundException)
+            {
+                Response.Cookies.Delete("accessToken");
+                Response.Cookies.Delete("refreshToken");
+                return Unauthorized(ex.Message);
+            }
+        }
+
+
     }
 }
