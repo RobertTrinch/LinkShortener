@@ -27,6 +27,7 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 });
 
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<ShortLinkService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
