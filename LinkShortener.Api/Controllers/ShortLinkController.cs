@@ -22,7 +22,16 @@ namespace LinkShortener.Api.Controllers
                 throw new Exception("User not authorized?");
             }
 
-            return await shortLinkService.CreateShortLink(request, int.Parse(userId));
+            var req = await shortLinkService.CreateShortLink(request, int.Parse(userId));
+            if(req.Success)
+            {
+#if DEBUG
+                req.Message = "https://localhost:7113/" + req.Message;
+#else
+                req.Message = "https://go.trinch.net/" + req.Message;
+#endif
+            }
+            return req;
         }
 
     }

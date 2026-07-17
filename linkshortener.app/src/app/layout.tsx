@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 import { MantineProvider } from "@mantine/core";
 import { AuthProvider } from "@/context/authContext";
+import { Notifications } from "@mantine/notifications";
 
 export const metadata: Metadata = {
   title: "Link Shortener",
@@ -19,6 +21,7 @@ export default function RootLayout({
       </head>
       <body>
         <MantineProvider defaultColorScheme="auto">
+          <Notifications />
           <AuthProvider>
               {children}
           </AuthProvider>

@@ -1,14 +1,19 @@
 ﻿using LinkShortener.Domain.Database;
+using LinkShortener.Domain.DTOs.Auth.Responses;
 using LinkShortener.Domain.DTOs.ShortLink;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace LinkShortener.Domain.Services
 {
     public class ShortLinkService(DatabaseContext context)
     {
+
+        //private readonly Regex _urlRegex = new Regex(@"/^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         public async Task<CreateShortLinkResponse> CreateShortLink(CreateShortLinkRequest dto, int userId)
         {
             var user = await context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
@@ -26,9 +31,19 @@ namespace LinkShortener.Domain.Services
                 return new CreateShortLinkResponse
                 {
                     Success = false,
-                    Message = "Url is empty"
+                    Message = "URL is empty"
                 };
             }
+
+            /*if (!_urlRegex.IsMatch(dto.Url))
+            {
+                return new CreateShortLinkResponse
+                {
+                    Success = false,
+                    Message = "Invalid URL format."
+                };
+            }
+            */
 
             // if slug is left empty
             if (string.IsNullOrEmpty(dto.Slug))
@@ -57,7 +72,7 @@ namespace LinkShortener.Domain.Services
                     return new CreateShortLinkResponse
                     {
                         Success = true,
-                        Message = $"Slug {newSlug} created"
+                        Message = $"{newSlug}"
                     };
                 }
                 // if folder is contained
@@ -89,7 +104,7 @@ namespace LinkShortener.Domain.Services
                     return new CreateShortLinkResponse
                     {
                         Success = true,
-                        Message = $"Slug {dto.FolderName.ToLower()}/{newSlug} created"
+                        Message = $"{dto.FolderName.ToLower()}/{newSlug}"
                     };
                 }
             }
@@ -119,7 +134,7 @@ namespace LinkShortener.Domain.Services
                 return new CreateShortLinkResponse
                 {
                     Success = true,
-                    Message = $"Slug {dto.Slug.ToLower()} created"
+                    Message = $"{dto.Slug.ToLower()}"
                 };
 
             }
@@ -164,7 +179,7 @@ namespace LinkShortener.Domain.Services
                 return new CreateShortLinkResponse
                 {
                     Success = true,
-                    Message = $"Slug {dto.FolderName.ToLower()}/{dto.Slug} created"
+                    Message = $"{dto.FolderName.ToLower()}/{dto.Slug.ToLower()}"
                 };
             }
 
