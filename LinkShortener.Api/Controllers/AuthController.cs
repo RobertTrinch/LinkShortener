@@ -1,6 +1,7 @@
 ﻿using LinkShortener.Domain.DTOs.Auth.Requests;
 using LinkShortener.Domain.DTOs.Auth.Responses;
 using LinkShortener.Domain.DTOs.User;
+using LinkShortener.Domain.Helpers;
 using LinkShortener.Domain.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -50,6 +51,19 @@ namespace LinkShortener.Api.Controllers
             }
         }
 
+        [HttpDelete]
+        public async Task<ActionResult> LogoutUser()
+        {
+            if (string.IsNullOrEmpty(Request.Cookies["refreshToken"]))
+            {
+                return BadRequest();
+            }
+
+            await authService.DeleteUserSession(Request.Headers.Authorization!);
+            Response.Cookies.Delete("accessToken");
+            Response.Cookies.Delete("refreshToken");
+            return Ok(true);
+        }
         
         [HttpGet]
         public async Task<ActionResult<UserProfileDto>> GetUserProfile()

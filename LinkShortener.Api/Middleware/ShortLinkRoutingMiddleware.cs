@@ -24,6 +24,17 @@ namespace LinkShortener.Api.Middleware
                 if (link != null)
                 {
                     TriggerRedirect(context, link.Url);
+
+                    var refQuery = context.Request.Query.TryGetValue("ref", out var refValues) ? refValues.ToString() : null;
+
+                    await dbContext.ClickAnalytics.AddAsync(new Domain.Database.Models.ClickAnalytic
+                    {
+                        ShortLinkId = link.ShortLinkId,
+                        ClickedAt = DateTime.Now,
+                        Referrer = refQuery,
+                        IpCountry = context.Connection.RemoteIpAddress.ToString()
+                    });
+                    await dbContext.SaveChangesAsync();
                     return;
                 }
             }
@@ -37,6 +48,17 @@ namespace LinkShortener.Api.Middleware
                 if (link != null)
                 {
                     TriggerRedirect(context, link.Url);
+
+                    var refQuery = context.Request.Query.TryGetValue("ref", out var refValues) ? refValues.ToString() : null;
+
+                    await dbContext.ClickAnalytics.AddAsync(new Domain.Database.Models.ClickAnalytic
+                    {
+                        ShortLinkId = link.ShortLinkId,
+                        ClickedAt = DateTime.Now,
+                        Referrer = refQuery,
+                        IpCountry = context.Connection.RemoteIpAddress.ToString()
+                    });
+                    await dbContext.SaveChangesAsync();
                     return;
                 }
             }

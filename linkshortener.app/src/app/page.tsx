@@ -12,13 +12,12 @@ export default function Home() {
         <Center style={{ height: "100vh" }}>
           <Container ta="center">
             <Group>
-              <Button color="dark">Login</Button>
-              <Button color="dark">
+              <Button color="dark" onClick={() => window.location.href = '/login'}>
+                Login
+              </Button>
+              <Button color="dark" onClick={() => window.location.href = '/register'}>
                 Register
               </Button>
-              <ActionIcon variant="filled" color='dark' size='lg' aria-label="Github">
-                <GithubLogoIcon size={20}/>
-              </ActionIcon>
             </Group>
           </Container>
         </Center>

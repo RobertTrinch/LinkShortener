@@ -37,13 +37,22 @@ export default function Home() {
     return (
         <div>
             <main>
-                <Container>
+                <Container my="md" px="md">
+                    <Center>
+                        <Group ta="center" mb="md">
+                            <Title order={2} pr="lg">Login</Title>
+                            <Title order={2} c="dimmed" pl="lg" onClick={() => router.push('/register')}>
+                                Register
+                            </Title>
+                        </Group>
+                    </Center>
                     <TextInput
                         leftSectionPointerEvents="none"
                         leftSection={<AtIcon size={16} />}
                         placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        mb="sm"
                     />
                     <PasswordInput
                         leftSection={<LockIcon size={18} />}
@@ -51,6 +60,7 @@ export default function Home() {
                         placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        mb="sm"
                     />
                     <Button onClick={handleLogin}>Login</Button>
                 </Container>

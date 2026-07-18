@@ -19,8 +19,8 @@ namespace LinkShortener.Domain.Database.Models
         [Required]
         public DateTime ClickedAt { get; set; }
         
-        public string Referrer { get; set; } = string.Empty;
-        public string IpCountry { get; set; } = string.Empty;
+        public string? Referrer { get; set; } = null!;
+        public string? IpCountry { get; set; } = null!;
 
     }
 }
